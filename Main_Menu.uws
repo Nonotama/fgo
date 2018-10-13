@@ -28,6 +28,7 @@ public	CARD_TYPE_ARTS			= "A"
 public	CARD_TYPE_QUICK			= "Q"
 
 //	その他
+public	OUTPUT_LOG		= FALSE
 public	OUTPUT_PRINT	= FALSE
 public	WAIT_SHARE_STAR = FALSE
 public	dim	ST_WAIT_COLLECT_STAR[] =	"バサスロ1","源頼光1","アタランテ・オルタ1","ジャンヌ・オルタ1",_
