@@ -1,0 +1,31 @@
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+ret = ""
+NAME = "dropOutBox"
+
+textblock
+for i=1 to 3
+
+	if CHKIMG( "Battle\3/"+NAME+i+".bmp",-1 ) = TRUE
+		ret = ret + i + ":OK ("+G_IMG_X+","+G_IMG_Y+")<#cr>"
+	else
+		ret = ret + i + ":NG<#cr>"
+	endif
+
+next
+
+_nextPos = 2
+		X=525+(25*(_nextPos-1))
+		Y=535+(25*(_nextPos-1))
+endtextblock
+
+if   CHKIMG( "Battle/battle_img/partyPos.bmp" ) = TRUE
+	ret = ret+"OK ("+G_IMG_X+","+G_IMG_Y+")<#cr>"
+	mmv(G_IMG_X,G_IMG_Y,0)
+else
+	ret = ret+"NG<#cr>"
+endif
+
+print ret
+

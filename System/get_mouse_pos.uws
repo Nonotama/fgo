@@ -1,0 +1,9 @@
+While !getkeystate(vk_F9)
+    x = G_MOUSE_X;  y = G_MOUSE_Y
+    id = GETID(GET_FROMPOINT_OBJ)
+    ofx = x - STATUS(id, ST_X)
+    ofy = y - STATUS(id, ST_Y) + 30
+    moji = "x="+ofx + ", y="+ofy
+    Fukidasi(moji, x, y, 3)
+    Sleep(0.5)
+Wend

@@ -1,0 +1,26 @@
+//	繰り返し出撃させるためループ
+while true
+	//=======================================================================
+	// バトルメニュー
+	//=======================================================================
+	select SLCTBOX(SLCT_BTN,0,_
+							"スカスカシステム",_		// タイトル
+							"パールバティ",_			// SLCT_1
+							"巌窟王",_					// SLCT_2
+							"バサスロ",_				// SLCT_3
+					)
+		case SLCT_1
+			LOG.outPutFukidasi( "サポート：スカディ<#CR>礼装　　：フリー" )
+			call Battle/システム/System_パール.uws (4)
+		case SLCT_2
+//			call Battle/システム/System_巌窟王.uws (4)
+		case SLCT_3
+//			call Battle/システム/System_バサスロ.uws (4)
+
+		case -1
+			break
+	selend
+
+	//	吹き出し消去
+	LOG.DropOutFukidasi()
+wend

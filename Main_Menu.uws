@@ -1,0 +1,83 @@
+DEFAULTFONT="MyricaM M"
+
+//===========================================================================
+//	クラスファイル読み込み
+//===========================================================================
+call ClassFile/LOG.uws
+
+//===========================================================================
+//	パブリック変数宣言
+//===========================================================================
+//	画像認識
+public	IMG_MASTER_SKILL_BTN	= "Battle/battle_img/ex0.bmp"
+public	IMG_ATTACK_BTN			= "Battle/battle_img/criticalStar/actAttack_"
+public	IMG_BOOTY1_PATH			= "Battle/battle_img/絆取得.bmp"
+public	IMG_BOOTY2_PATH			= "Battle/battle_img/獲得した戦利品_フリクエ.bmp"
+public	IMG_BOOTY2_PATH2		= "Battle/battle_img/獲得した戦利品_イベント.bmp"
+public	IMG_NO_REQ_PATH			= "Battle/battle_img/noRequest.bmp"
+public	IMG_REFRESH_YES_PATH	= "System/common_img/refreshListYes.bmp"
+public	IMG_REFRESH_CLOSE_PATH	= "System/common_img/refreshListClose.bmp"
+
+//	戦闘
+public	SELECTED_NML_CARD		= 0
+public	WAIT_SEL_EX_CMD_CARD	= 0.6
+public	PUSH_ATTACK_BUTTON		= "attack"
+public	MAX_SEL_CARD			= 3
+public	CARD_TYPE_BUSTER		= "B"
+public	CARD_TYPE_ARTS			= "A"
+public	CARD_TYPE_QUICK			= "Q"
+
+//	その他
+public	OUTPUT_PRINT	= FALSE
+public	WAIT_SHARE_STAR = FALSE
+public	dim	ST_WAIT_COLLECT_STAR[] =	"バサスロ1","源頼光1","アタランテ・オルタ1","ジャンヌ・オルタ1",_
+										"ギルガメッシュ3","スカサハ1","サンテラ1","巴御前2",_
+										"ラーマ1","アンメア3","哪吒3","ランスロット2","沖田・オルタ2"
+
+public	dim	ST_WAIT_GET_STAR[] =		"アマデウス2","ヒロインX3","ロビンフッド3","ランスロット1",_
+										"クレオパトラ3","アルトリア3","モードレッド2","アルトリア・オルタ2",_
+										"リリィ1","ドレイク3"
+
+while true
+	//=======================================================================
+	//	メインメニュー
+	//=======================================================================
+	select SLCTBOX(SLCT_BTN,0,	"実行する処理を選択して下さい。",_	// タイトル
+								"クエスト（フリー）",_				// SLCT_1
+								"クエスト（イベント）",_			// SLCT_2
+								"クエスト（システム）",_			// SLCT_3
+								"━━━━━━━━",_				// SLCT_4
+								"フレポ召喚（10連）",_				// SLCT_5
+								"ボックスガチャ開封",_				// SLCT_6
+								"━━━━━━━━",_				// SLCT_7
+								"画像確認",_						// SLCT_8
+								"オブジェクト座標取得",_			// SLCT_9
+								"キャプチャイメージ　"_				// SLCT_10
+					)
+
+		case SLCT_1
+			call Battle/Battle_Menu_FreeQuest.uws
+		case SLCT_2
+			call Battle/Battle_Menu_Event.uws
+		case SLCT_3
+			call Battle/Battle_Menu_System.uws
+		case SLCT_4
+			//	区切り専用
+		case SLCT_5
+			LOG.outPutLog("[S]フレポ召喚(10連)")
+			call Summon/summon_FriendPoint.uws
+		case SLCT_6
+			LOG.outPutLog("[S]ボックスガチャ開封")
+			call System/open_BoxEvent.uws
+		case SLCT_7
+			//	区切り専用
+		case SLCT_8
+			call System/check_img.uws
+		case SLCT_9
+			call System/get_mouse_pos.uws
+		case SLCT_10
+			call System/capture_img.uws
+		case -1
+			exit
+	selend
+wend

@@ -1,0 +1,98 @@
+//===========================================================================
+//	クラスファイル読み込み
+//===========================================================================
+call ClassFile/LOG.uws
+call ClassFile/CMN.uws
+
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+//	引数を受け取る
+PARTY_NO =	PARAM_STR[0]
+CMN.SelectParty(PARTY_NO)
+
+index = 0
+Act_Phase = 1
+
+//=======================================================================
+//	ログの出力
+//=======================================================================
+LOG.OutPutLog("[E]System_パール")
+CMN.OutputPrint("ログの出力")
+
+while TRUE
+	//=======================================================================
+	//	攻撃前処理
+	//=======================================================================
+	while TRUE
+		//	絆取得画面ならばループ終了
+		if CHKIMG( IMG_BOOTY1_PATH,1,80,200,110,250 )
+			break 2
+		endif
+
+		//	Attackボタンがあれば攻撃処理へ
+		For index = 0 To 9
+//			CMN.OutputPrint(index)
+			if CHKIMG( "Battle/battle_img/criticalStar/actAttack_" + index + ".bmp") = TRUE
+				sleep(0.3)
+
+				break 2
+			endif
+		Next
+
+		sleep(0.05)
+	wend
+	CMN.OutputPrint("攻撃前処理：終了")
+
+
+	//=======================================================================
+	//	攻撃処理
+	//=======================================================================
+	select Act_Phase
+		case 1
+			CMN.OutputPrint("フェーズ1")
+			//	フェーズ1
+			CMN.ServantSkill( 1, 0, "パールヴァティー1" )
+			CMN.ServantSkill( 2, 1, "スカディ1" )
+			CMN.ServantSkill( 3, 1, "スカディ1" )
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(1)
+
+			Act_Phase = 2
+
+		case 2
+			CMN.OutputPrint("フェーズ2")
+			//	フェーズ2
+			CMN.ServantSkill( 1, 0, "パールヴァティー2" )
+			CMN.ServantSkill( 2, 0, "スカディ2" )
+			CMN.ServantSkill( 2, 1, "スカディ3" )
+			CMN.MasterSkill( 50, 1, "コードH" )
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(1)
+			Act_Phase = 3
+
+		case 3
+			CMN.OutputPrint("フェーズ3")
+			//	フェーズ3
+			CMN.ServantSkill( 1, 1, "パールヴァティー3" )
+			CMN.ServantSkill( 3, 0, "スカディ2" )
+			CMN.ServantSkill( 3, 1, "スカディ3" )
+			CMN.MasterSkill( 50, 1, "コードF" )
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(1)
+			Act_Phase = -1
+
+		default
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
+
+	selend
+
+	CMN.SelectNmlCmdMultiCard()
+wend
+
+//	TOP画面まで戻る
+CMN.OutputPrint("TOP画面まで戻る")
+CMN.ServantSkill( 99, 0, "nextButton" )

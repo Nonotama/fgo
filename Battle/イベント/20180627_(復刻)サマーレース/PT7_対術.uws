@@ -1,0 +1,106 @@
+//===========================================================================
+//	クラスファイル読み込み
+//===========================================================================
+call ClassFile/LOG.uws
+call ClassFile/CMN.uws
+
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+//	引数を受け取る
+PARTY_NO =	PARAM_STR[0]
+CMN.SelectParty(PARTY_NO)
+
+Act_Phase = 1
+Phase1_Flg = FALSE
+Phase2_Flg = FALSE
+Phase3_Flg = FALSE
+
+//=======================================================================
+//	ログの出力
+//=======================================================================
+LOG.OutPutLog("[E]Evnet_20180627_(復刻)サマーレース_PT7_対術")
+
+while TRUE
+	//=======================================================================
+	//	攻撃前処理
+	//=======================================================================
+	while TRUE
+		//	絆取得画面ならばループ終了
+		if CHKIMG( IMG_BOOTY1_PATH,1,80,200,110,250 )
+			break 2
+		endif
+
+		//	Attackボタンがあれば攻撃処理へ
+		if CHKIMG( IMG_ATTACK_BTN,1,1041,719,1051,1045 ) = TRUE
+			sleep(0.3)
+
+textblock
+			//	特定のエネミーが居たら処理を変更する
+			if CHKIMG("System/capture_img/スケルトンキング.bmp",1,270,60,310,90) = TRUE
+				if Phase1_Flg = FALSE
+					Act_Phase = 3
+					Phase1_Flg = TRUE
+				else
+					Act_Phase = -1
+				endif
+			endif
+			elseif CHKIMG("System/capture_img/スペースドラゴン.bmp",-1,512,61,533,92) = TRUE
+				if Phase2_Flg = FALSE
+					Act_Phase = 2
+					Phase2_Flg = TRUE
+				else
+					Act_Phase = -1
+				endif
+			endif
+
+endtextblock
+
+			break
+		endif
+
+		sleep(0.05)
+	wend
+	//=======================================================================
+	//	攻撃処理
+	//=======================================================================
+	select Act_Phase
+		case 1
+			//	フェーズ1
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(1)
+
+			Act_Phase = 2
+
+		case 2
+			//	フェーズ2
+			CMN.ServantSkill( 1, 0, "ドレイク3" )
+			CMN.ServantSkill( 3, 1, "孔明1" )
+			CMN.ServantSkill( 3, 0, "孔明2" )
+			CMN.ServantSkill( 3, 0, "孔明3" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(1)
+			Act_Phase = 3
+
+		case 3
+			//	フェーズ3
+			CMN.ServantSkill( 2, 0, "アストルフォ1" )
+			CMN.ServantSkill( 2, 0, "アストルフォ3" )
+			CMN.MasterSkill( 50, 2, "幻想強化" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(2)
+			Act_Phase = -1
+
+		default
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+	selend
+	
+	CMN.SelectNmlCmdMultiCard()
+wend
+
+//	TOP画面まで戻る
+CMN.ServantSkill( 99, 0, "nextButton" )
