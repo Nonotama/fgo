@@ -1,0 +1,146 @@
+//===========================================================================
+//	クラスファイル読み込み
+//===========================================================================
+call ClassFile/LOG.uws
+call ClassFile/CMN.uws
+
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+//	引数を受け取る
+PARTY_NO =	PARAM_STR[0]
+CMN.SelectParty(PARTY_NO)
+
+Act_Phase = 1
+
+//=======================================================================
+//	ログの出力
+//=======================================================================
+LOG.OutPutLog("[E]Evnet_20180613_ぐだぐだ帝都聖杯奇譚_目黄不動")
+
+while TRUE
+	//=======================================================================
+	//	攻撃前処理
+	//=======================================================================
+	while TRUE
+		//	絆取得画面ならばループ終了
+		if CHKIMG( IMG_BOOTY1_PATH,1,80,200,110,250 )
+			break 2
+		endif
+
+		//	Attackボタンがあれば攻撃処理へ
+		if CHKIMG( IMG_ATTACK_BTN,1,1041,719,1051,1045 ) = TRUE
+			//	特定のエネミーが居たら処理を変更する
+			//	・フェーズ11
+			if Act_Phase = 11
+				// 	・エネミー3が"アサシン"なら素殴り
+				if CHKIMG( "System\capture_img/アサシン3.bmp",1,20,50,80,100 ) = FALSE
+					Act_Phase = 2
+				endif
+			endif
+
+			break
+		endif
+
+		sleep(0.05)
+	wend
+
+	//=======================================================================
+	//	攻撃処理
+	//=======================================================================
+	select Act_Phase
+		case 1
+			//	フェーズ1-1
+			CMN.ServantSkill( 1, 0, "ニトクリス1" )
+			CMN.ServantSkill( 3, 2, "孔明1" )
+			CMN.ServantSkill( 3, 0, "孔明2" )
+			CMN.ServantSkill( 3, 0, "孔明3" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(1)
+
+			Act_Phase = 2
+
+		case 2
+			//	フェーズ2-1
+			CMN.ServantSkill( 1, 0, "ニトクリス2" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(1)
+			Act_Phase = 3
+
+		case 3
+			//	フェーズ3
+			CMN.ServantSkill( 2, 0, "沖田・オルタ1" )
+			CMN.ServantSkill( 2, 0, "沖田・オルタ3" )
+			CMN.MasterSkill( 50, 2, "幻想強化" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(2)
+			Act_Phase = -1
+
+		default
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+	selend
+
+	CMN.SelectNmlCmdMultiCard()
+wend
+
+//	TOP画面まで戻る
+CMN.ServantSkill( 99, 0, "nextButton" )
+
+textblock
+	select Act_Phase
+		case 1
+			//	フェーズ1-1
+			CMN.ServantSkill( 1, 0, "ニトクリス1" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(1)
+
+			Act_Phase = 2
+		case 2
+			//	フェーズ1-2
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			Act_Phase = 11
+
+		case 11
+			//	フェーズ2-1
+			CMN.ServantSkill( 1, 0, "ニトクリス2" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(1)
+			Act_Phase = 12
+
+		case 12
+			//	フェーズ2-2
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(2)
+			Act_Phase = 21
+
+		case 21
+			//	フェーズ3
+			CMN.ServantSkill( 2, 0, "ニトクリス2" )
+			CMN.ServantSkill( 3, 0, "沖田・オルタ1" )
+			CMN.ServantSkill( 3, 0, "沖田・オルタ2" )
+			CMN.ServantSkill( 3, 0, "沖田・オルタ3" )
+			CMN.MasterSkill( 50, 3, "幻想強化" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+			CMN.SelectExCmdCard(2)
+			CMN.SelectExCmdCard(3)
+			Act_Phase = -1
+
+		default
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+	selend
+
+	CMN.SelectNmlCmdMultiCard()
+wend
+
+//	TOP画面まで戻る
+CMN.ServantSkill( 99, 0, "nextButton" )
+endtextblock

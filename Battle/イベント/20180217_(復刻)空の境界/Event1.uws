@@ -1,0 +1,36 @@
+//===========================================================================
+//	クラスファイル読み込み
+//===========================================================================
+call ClassFile/INI.uws
+call ClassFile/LOG.uws
+call ClassFile/CMN.uws
+
+//	引数を受け取る
+MASTER_SKILL =	PARAM_STR[0]
+
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+//=======================================================================
+//	ログの出力
+//=======================================================================
+LOG.OutPutLog("[E]Evnet_201802xx_空の境界(復刻)_")
+
+//=======================================================================
+//	ターン1
+//=======================================================================
+flg = FALSE
+while flg = FALSE
+	CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+	sleep(WAIT_SEL_EX_CMD_CARD)
+	CMN.SelectNmlCmdMultiCard()
+
+
+	//	絆取得画面ならば抜ける
+	if CHKIMG( IMG_BOOTY1_PATH,1,80,200,110,250 )
+		flg = TRUE
+	endif
+wend
+
+CMN.ServantSkill( 99, 0, "nextButton" )

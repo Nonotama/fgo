@@ -1,0 +1,21 @@
+//chkimg用の画像を保存するスクリプト
+
+while true
+	img = input("保存するファイル名を入力して下さい<#cr>ファイルはimgフォルダに保存されます")
+	ifb img = empty
+		exitexit
+	elseif img = 
+		img = "名無し"
+	endif
+	msgbox("OKを押した後、キャプチャしたい場所にマウスカーソルを移動させ<#CR>F5キーを押してください")
+	repeat
+		sleep(0.2)
+	until getkeystate(vk_F5)
+	saveimg("System\capture_img\" + img, , g_mouse_x, g_mouse_y, 30, 30)   //16, 1は画像サイズ 横, 縦
+	select msgbox("画像を保存しました。キャプチャを続けますか？",btn_yes or btn_no)
+		case btn_yes
+			continue
+		case btn_no
+			exitexit
+	selend
+wend

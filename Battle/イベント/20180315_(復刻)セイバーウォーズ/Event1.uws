@@ -1,0 +1,86 @@
+//===========================================================================
+//	クラスファイル読み込み
+//===========================================================================
+call ClassFile/INI.uws
+call ClassFile/LOG.uws
+call ClassFile/CMN.uws
+
+//	引数を受け取る
+MASTER_SKILL =	PARAM_STR[0]
+PARTY_NO     =	PARAM_STR[1]
+
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+Act_Phase = 0
+
+//=======================================================================
+//	ログの出力
+//=======================================================================
+LOG.OutPutLog("[E]Evnet_20180316_セイバーウォーズ(復刻)_星団級")
+
+while TRUE
+	//=======================================================================
+	//	攻撃前処理
+	//=======================================================================
+	while TRUE
+		//	絆取得画面ならばループ終了
+		if CHKIMG( IMG_BOOTY1_PATH,1,80,200,110,250 )
+			break 2
+		endif
+
+		//	Attackボタンがあれば攻撃処理へ
+		if CHKIMG( IMG_ATTACK_BTN,-1,1110,660,1170,680 ) = TRUE
+			Act_Phase = Act_Phase + 1
+
+			//	特定のエネミーが居たら処理を変更する
+
+			break
+		endif
+
+		sleep(0.05)
+	wend
+
+	//=======================================================================
+	//	攻撃処理
+	//=======================================================================
+	select Act_Phase
+		case 1
+			//	フェーズ1
+			CMN.ServantSkill( 3, 0, "アーラシュ3" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			sleep(WAIT_SEL_EX_CMD_CARD)
+			CMN.SelectExCmdCard(3)
+
+		case 2
+			//	フェーズ2
+			CMN.ServantSkill( 1, 0, "アルトリア1" )
+			CMN.ServantSkill( 1, 0, "アルトリア2" )
+			CMN.ServantSkill( 3, 2, "孔明1" )
+			CMN.ServantSkill( 3, 0, "孔明3" )
+			CMN.OrderChangeCmd( 3, 4 )
+			CMN.ServantSkill( 3, 2, "孔明1" )
+			CMN.ServantSkill( 3, 0, "孔明3" )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			sleep(WAIT_SEL_EX_CMD_CARD)
+			CMN.SelectExCmdCard(1)
+
+		case 3
+			//	フェーズ3
+			CMN.ServantSkill( 2, 0, "カルナ2" )
+			CMN.ServantSkill( 2, 0, "カルナ3" )
+			CMN.MasterSkill( 50, 0, "全体強化", MASTER_SKILL )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			sleep(WAIT_SEL_EX_CMD_CARD)
+			CMN.SelectExCmdCard(2)
+		case -1
+			CMN.ServantSkill( 91, 0, PUSH_ATTACK_BUTTON )
+			sleep(WAIT_SEL_EX_CMD_CARD)
+	selend
+
+	CMN.SelectNmlCmdMultiCard()
+
+wend
+
+//	TOP画面まで戻る
+CMN.ServantSkill( 99, 0, "nextButton" )

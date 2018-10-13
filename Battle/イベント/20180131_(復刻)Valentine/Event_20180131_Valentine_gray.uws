@@ -1,0 +1,59 @@
+//	戦闘共通クラスの呼び出し
+call common.uws
+
+//	引数を受け取る
+MASTER_SKILL =	PARAM_STR[0]
+
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+//=======================================================================
+//	ターン1
+//=======================================================================
+CMN.ServantSkill( 2, 0, "孔明2" )
+CMN.ServantSkill( 2, 0, "孔明3" )
+
+CMN.ServantSkill( 2, 0, PUSH_ATTACK_BUTTON )
+
+sleep(WAIT_SEL_EX_CMD_CARD)
+CMN.SelectExCmdCard(3)
+CMN.SelectNmlCmdCard()
+CMN.SelectNmlCmdCard()
+
+//=======================================================================
+//	ターン2
+//=======================================================================
+CMN.ServantSkill( 2, 0, "ニトクリス2" )
+
+CMN.ServantSkill( 2, 0, PUSH_ATTACK_BUTTON )
+
+sleep(WAIT_SEL_EX_CMD_CARD)
+CMN.selectExCmdCard(3)
+CMN.selectExCmdCard(1)
+CMN.SelectNmlCmdCard()
+
+//=======================================================================
+//	ターン3
+//=======================================================================
+CMN.OrderChangeCmd( 3, 4 )
+
+CMN.ServantSkill( 1, 0, "玄奘三蔵1" )
+CMN.ServantSkill( 2, 1, "孔明1" )
+CMN.ServantSkill( 3, 0, "ナーサリー3" )
+
+CMN.MasterSkill( 50, 0, "全体強化", MASTER_SKILL )
+CMN.SelectEnemy(1)
+
+CMN.ServantSkill( 2, 0, PUSH_ATTACK_BUTTON )
+
+sleep(WAIT_SEL_EX_CMD_CARD)
+CMN.selectExCmdCard(3)
+CMN.selectExCmdCard(1)
+CMN.SelectNmlCmdCard()
+
+//=======================================================================
+//	戦闘終了後
+//	※トップ画面が見えるまでクリック連打
+//=======================================================================
+//sleep(11)
+CMN.ServantSkill( 99, 0, "nextButton" )

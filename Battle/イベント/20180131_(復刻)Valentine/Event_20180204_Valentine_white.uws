@@ -1,0 +1,76 @@
+//	戦闘共通クラスの呼び出し
+call common.uws
+
+//	引数を受け取る
+MASTER_SKILL =	PARAM_STR[0]
+
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+//=======================================================================
+//	ターン1
+//=======================================================================
+CMN.ServantSkill( 3, 0, "アーラシュ3" )
+
+CMN.MasterSkill( 50, 0, "全体強化", MASTER_SKILL )
+
+CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+sleep(WAIT_SEL_EX_CMD_CARD)
+CMN.SelectExCmdCard(3)
+CMN.SelectNmlCmdCard()
+CMN.SelectNmlCmdCard()
+
+//=======================================================================
+//	ターン2
+//=======================================================================
+CMN.ServantSkill( 1, 0, "孔明2" )
+CMN.ServantSkill( 1, 0, "孔明3" )
+
+CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+sleep(WAIT_SEL_EX_CMD_CARD)
+CMN.SelectExCmdCard(3)
+CMN.SelectNmlCmdCard()
+CMN.SelectNmlCmdCard()
+
+//=======================================================================
+//	ターン3
+//=======================================================================
+CMN.ServantSkill( 1, 3, "孔明1" )
+
+CMN.OrderChangeCmd( 1, 4 )
+
+//	サポート鯖が誰か判定する
+selectSupport = CMN.CheckSupport()
+if selectSupport = "マーリン"
+	CMN.ServantSkill( 1, 0, "マーリン1" )
+	CMN.ServantSkill( 1, 2, "マーリン3" )
+elseif selectSupport = "孔明"
+	CMN.ServantSkill( 1, 0, "孔明2" )
+	CMN.ServantSkill( 1, 0, "孔明3" )
+elseif selectSupport = "エレナ"
+	CMN.ServantSkill( 1, 0, "エレナ1" )
+	CMN.ServantSkill( 1, 0, "エレナ3" )
+endif
+
+CMN.ServantSkill( 2, 0, "オジマンディアス1" )
+CMN.ServantSkill( 2, 0, "オジマンディアス3" )
+CMN.ServantSkill( 2, 0, "オジマンディアス2" )
+CMN.ServantSkill( 3, 0, "アストルフォ1" )
+CMN.ServantSkill( 3, 0, "アストルフォ3" )
+
+CMN.SelectEnemy(1)
+
+CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+sleep(WAIT_SEL_EX_CMD_CARD)
+CMN.SelectExCmdCard(2)
+CMN.SelectExCmdCard(3)
+CMN.SelectNmlCmdCard()
+
+//=======================================================================
+//	戦闘終了後
+//	※トップ画面が見えるまでクリック連打
+//=======================================================================
+CMN.ServantSkill( 99, 0, "nextButton" )

@@ -1,0 +1,461 @@
+//***********************************************************************
+//
+//	戦闘時のスキルやカード選択を行うクラス
+//
+//***********************************************************************
+CLASS CMN
+	//===================================================================
+	//	各戦闘コマンドの受け皿用
+	//===================================================================
+	Procedure ServantSkill( _chkPos, _selServant, _img )
+		CheckImage( _chkPos, _selServant, _img )
+	Fend
+
+	Procedure MasterSkill( _chkPos, _selServant, _img )
+		CheckImage( _chkPos, _selServant, _img )
+	Fend
+
+	//===================================================================
+	//	画像認識と認識後ボタン押下処理
+	//	引数	：
+	//			_chkPos				認識指定エリア
+	//			_selServant			単体キャラ指定スキル時のキャラ位置
+	//			_img				検出画像名(例：スキル使用者とスキル番号)
+	//===================================================================
+	procedure CheckImage( _chkPos, _selServant, _img )
+
+		//	場所毎のスキル
+		IMG_ACT_SKILL_BTN	= "Battle/" + _chkPos + "/" + _img + ".bmp"
+
+		//	使用マスタースキル
+		IMG_ACT_MASTER_BTN	= "Battle/battle_img/masterSkill/" + _img + ".bmp"
+
+		//	引数により処理を分岐
+		select _chkPos
+
+			// マスター礼装
+			case 50
+				//	マスタースキルボタン認識まで待機
+				while CHKIMG( IMG_MASTER_SKILL_BTN,-1,1170,320,1230,375 ) = FALSE
+					sleep(0.1)
+				wend
+				sleep(0.2)
+				btn(LEFT,CLICK,G_IMG_X,G_IMG_Y,0)
+
+				//	マスタースキルのサブウィンドウ内のスキルを認識まで待機
+				While CHKIMG( IMG_ACT_MASTER_BTN,-1,880,310,1110,370 ) = FALSE
+					sleep(0.1)
+				Wend
+				sleep(0.25)
+				btn(LEFT,CLICK,G_IMG_X+15,G_IMG_Y+15,0)
+
+			// アタックボタン
+			case 90
+				//	アタックボタン認識まで待機
+				while CHKIMG( IMG_ATTACK_BTN+_selServant+".bmp",1,1000,600,1100,750 ) = FALSE
+					sleep(0.1)
+				wend
+				OutputPrint(IMG_ATTACK_BTN+_selServant+".bmp")
+
+//				sleep(0.2)
+//				btn(LEFT,CLICK,1130,600,0)
+//				sleep(0.5)
+
+				if CHKIMG( IMG_ATTACK_BTN+_selServant+".bmp",1,1000,600,1100,750 ) = TRUE
+					btn(LEFT,CLICK,1130,600,0)
+					OutputPrint("攻撃ボタンクリック")
+					sleep(0.4)
+				endif
+
+				//	コマンドカード出現までの待ち
+				OutputPrint("コマンドカード出現までの待ち")
+				sleep(WAIT_SEL_EX_CMD_CARD)
+
+				WAIT_SHARE_STAR = FALSE
+
+				_selServant = 0
+
+			//	バスター優先選択
+			case 91
+				SelectNmlTypeCard(CARD_TYPE_BUSTER)
+
+			//	アーツ優先選択
+			case 92
+				SelectNmlTypeCard(CARD_TYPE_ARTS)
+
+			//	クイック優先選択
+			case 93
+				SelectNmlTypeCard(CARD_TYPE_QUICK)
+
+			// 戦闘終了までクリック連打
+			case 99
+				//	絆取得画面まで待機
+				while CHKIMG( IMG_BOOTY1_PATH,1,80,190,150,250 ) = FALSE
+					sleep(0.1)
+				wend
+
+				while TRUE
+					if CHKIMG( IMG_BOOTY2_PATH, 1,160,160,280,280 ) = TRUE OR _		//	フリクエ
+					   CHKIMG( IMG_BOOTY2_PATH2,1,160,160,280,280 ) = TRUE			//	イベント
+						break
+					else
+						btn(LEFT,CLICK,90,700,0)
+						sleep(0.2)
+					endif
+				wend
+				btn(LEFT,CLICK,1125,700,0)
+	//	イベント用
+	sleep(0.5)
+	btn(LEFT,CLICK,1125,700,50)
+	//	イベント用
+
+				//	フレ申請画面まで待機
+				sleep(0.5)
+
+				//	フレ以外のサポの場合、申請しないを選択
+				if CHKIMG( IMG_NO_REQ_PATH,-1,200,600,450,900 ) = TRUE
+					btn(LEFT,CLICK,G_IMG_X,G_IMG_Y+10,0)
+				endif
+
+			//	キャラのスキル選択
+			default
+				CHK_SKILL_S =  40 + 320*(_chkPos-1)
+				CHK_SKILL_E = 290 + 320*(_chkPos-1)
+
+				//	スキル画像認識まで待機
+				while CHKIMG( IMG_ACT_SKILL_BTN,-1,CHK_SKILL_S,580,CHK_SKILL_E,640 ) = FALSE
+					sleep(0.1)
+				wend
+
+				//	キャラクターチェンジ(オーダーチェンジ)等やスター獲得、スター集中後は
+				//	スター再分配があるのでWaitしないとクリックを受け付けない
+				if WAIT_SHARE_STAR = TRUE
+					WAIT_SHARE_STAR = FALSE
+					sleep(0.55)
+				endif
+
+				//	スター集中度変更
+				for i=0 to length(ST_WAIT_COLLECT_STAR)-1
+					if _img = ST_WAIT_COLLECT_STAR[i]
+						WAIT_SHARE_STAR = TRUE
+						break
+					endif
+				next
+				//	スター獲得
+				for i=0 to length(ST_WAIT_GET_STAR)-1
+					if _img = ST_WAIT_GET_STAR[i]
+						WAIT_SHARE_STAR = TRUE
+						break
+					endif
+				next
+
+				btn(LEFT,CLICK,G_IMG_X+15,G_IMG_Y+15,0)
+
+		selend
+
+		//	キャラ指定のスキルを使用
+		SelectServant( _selServant, _img )
+
+		//	安定させるためには最低0.3s入れないと、画面に残っている次に押すスキルを認識してしまい、
+		//	押せない状態のボタンを押下してどんどん先の処理へ進んでしまう。
+		sleep(0.5)
+	fend
+
+	//=======================================================================
+	//	単体キャラ選択
+	//	引数	：	_pos	キャラ位置
+	//		 1    2    3
+	//		 ○	 ○	 ○
+	//	X	320	650	980
+	//	Y	450
+	//=======================================================================
+	procedure SelectServant( _selServant, _img )
+		//	キャラ位置が指定されていなかった場合は入力させる
+		if _img = "幻想強化"
+			while _selServant < 1 OR _selServant > 3
+				_selServant = INPUT( "スキル："+_img+"の使用相手を入力してください(1-3)")
+			wend
+		endif
+
+		if _selServant > 0
+			//	スキル押下からキャラ選択まで少しの間待機する
+			sleep(0.45)
+			btn(LEFT,CLICK,320+330*(_selServant-1),450,0)
+		endif
+	fend
+
+	//=======================================================================
+	//	オーダーチェンジキャラ選択
+	//	引数	：	_pos	キャラ位置
+	//		 1    2    3    4    5    6
+	//		 ○	 ○	 ○	 ○	 ○	 ○
+	//		 ○	 ○	 ○	 ○	 ○
+	//	X	140	340	540	740	940	1140
+	//	Y	380
+	//	※オーダーチェンジは5人でも6人でも座標は固定
+	//=======================================================================
+	procedure OrderChangeCmd( _pos1, _pos2 )
+		CheckImage( 50, 0, "オーダーチェンジ" )
+
+		WAIT_SHARE_STAR = TRUE
+
+		sleep(0.15)
+		btn(LEFT,CLICK,140+200*(_pos1-1),380,0)
+		sleep(0.1)
+		btn(LEFT,CLICK,140+200*(_pos2-1),380,0)
+
+		// 入れ替え実行
+		sleep(0.1)
+		btn(LEFT,CLICK,640,650,0)
+
+		//	実行ボタン押下後に画面からスキルが消えるまで待機
+		sleep(1)
+	fend
+
+	//=======================================================================
+	//	宝具コマンドカード選択
+	//	引数	：	_pos	宝具位置
+	//		 0    1    2
+	//		 □	 □	 □
+	//	X	420	660	900
+	//	Y	250
+	//=======================================================================
+	procedure SelectExCmdCard( _pos )
+		OutputPrint( "SelectExCmdCard" )
+		btn(LEFT,CLICK,420+240*(_pos-1),250,0)
+		sleep(0.1)
+	fend
+
+	//=======================================================================
+	//	通常コマンドカード選択
+	//	カード位置
+	//		 0    1    2    3    4
+	//		 □	 □	 □	 □	 □
+	//	X	135	390	645	900	1155
+	//	Y	500
+	//=======================================================================
+	procedure SelectNmlCmdSingleCard()
+		pos = random(5)
+
+		//	前回選択したカードと比較し、異なる数値が出るまで繰り返す(0～4)
+		while true
+			if SELECTED_NML_CARD = pos
+				pos = random(5)
+			else
+				SELECTED_NML_CARD = pos
+				break
+			endif
+		wend
+
+		btn(LEFT,CLICK,135+(255*pos),500,0)
+		sleep(0.1)
+	fend
+
+	//=======================================================================
+	//	通常コマンドカード選択(3枚選択)
+	//	カード位置
+	//		 0    1    2    3    4
+	//		 □	 □	 □	 □	 □
+	//	X	135	390	645	900	1155
+	//	Y	500
+	//=======================================================================
+	procedure SelectNmlCmdMultiCard()
+		dim st_card[] = 0,1,2,3,4
+		dim val, tmp
+
+		//	st_cardの配列をランダムに入れ替え
+		for i=0 to length(st_card)-1
+			val				= random(5)
+			tmp				= st_card[val]
+			st_card[val]	= st_card[i]
+			st_card[i]		= tmp
+		next
+
+		sleep(0.1)
+		for i=0 to 2
+			btn(LEFT,CLICK,135+(255*st_card[i]),500,0)
+			sleep(0.1)
+		next
+	fend
+
+	//=======================================================================
+	//	通常コマンドカード選択(Baster,Arts,Quickカード偏重)
+	//	※現在Basterカード優先処理のみ実装
+	//=======================================================================
+	procedure SelectNmlTypeCard( _type )
+		dim	st_Main[3]
+		dim	st_Etc[3]
+
+		CARD_TYPE_PATH = ""
+
+		CountMainType = 0
+		CountSubType = 0
+
+		if _type = CARD_TYPE_BUSTER
+			CARD_TYPE_PATH = "Battle/battle_img/card_type/B"
+		elseif _type = CARD_TYPE_ARTS
+			CARD_TYPE_PATH = "Battle/battle_img/card_type/A"
+		elseif _type = CARD_TYPE_QUICK
+			CARD_TYPE_PATH = "Battle/battle_img/card_type/Q"
+		else
+			//	指定以外の引数が渡されたらバスター固定
+			CARD_TYPE_PATH = "Battle/battle_img/card_type/B"
+		endif
+
+		sleep(0.1)
+
+		//	タイプ別カード検索
+		for i=1 to 5
+			//	3枚揃ったら抜ける
+			if CountMainType > 2
+				break
+			endif
+
+			//	カード検索
+			if CHKIMG( CARD_TYPE_PATH + i + ".bmp",1,950,470,1250,620 )
+				//	_typeが見つかったら、st_Main[0-2]にカード位置を格納
+				st_Main[CountMainType] = i
+				CountMainType = CountMainType + 1
+			else
+				//	AAQQB等の場合もあるので、AQ4枚目以降はカウントしない
+				if CountSubType < MAX_SEL_CARD
+					//	_type以外のカード位置をst_Etc[0-2]にカード位置を格納
+					st_Etc[CountSubType] = i
+					CountSubType = CountSubType + 1
+				endif
+			endif
+		next
+
+		//	攻撃ボタン押下
+		CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+
+		//	_typeが1枚以上ある時
+		if CountMainType > 0
+			for i=0 to CountMainType-1
+				sleep(0.15)
+				btn(LEFT,CLICK,135+(255*(st_Main[i]-1)),500,0)
+			next
+		endif
+
+		//	2枚以下の時
+		if CountMainType < 3
+			//	選択最大枚数(3)から_typeカードの枚数を引いた数だけ実行
+			for i=0 to 2-CountMainType
+				sleep(0.15)
+				btn(LEFT,CLICK,135+(255*(st_Etc[i]-1)),500,0)
+			next
+		endif
+	fend
+
+	//=======================================================================
+	//	敵選択
+	//	引数	：	_pos	敵位置
+	//		 1    2    3
+	//		 	  	   ○
+	//		 	  ○	  ○
+	//		 ○	 ○	 ○
+	//	X	40	285	530
+	//	Y	70
+	//=======================================================================
+	procedure SelectEnemy( _pos )
+		btn(LEFT,CLICK,40+245*(_pos-1),70,0)
+	fend
+
+	//=======================================================================
+	//	サポート鯖の判定
+	//	※スキル画像が被らないように画像認識を行い、一致したキャラ名を返す
+	//=======================================================================
+	function CheckSupport( _pos )
+		CHK_SKILL_S =  40 + 320*(_pos-1)
+		CHK_SKILL_E = 290 + 320*(_pos-1)
+		while result = ""
+			//	宝物庫用
+			if CHKIMG( "Battle/"+_pos+"/オジマンディアス2.bmp",-1,CHK_SKILL_S,580,CHK_SKILL_E,640 )
+				result = "オジマンディアス"
+			//	種火用
+			elseif CHKIMG( "Battle/"+_pos+"/マーリン2.bmp",-1,CHK_SKILL_S,580,CHK_SKILL_E,640 )
+				result = "マーリン"
+			elseif CHKIMG( "Battle/"+_pos+"/孔明1.bmp",-1,CHK_SKILL_S,580,CHK_SKILL_E,640 )
+				result = "孔明"
+			elseif CHKIMG( "Battle/"+_pos+"/エレナ3.bmp",-1,CHK_SKILL_S,580,CHK_SKILL_E,640 )
+				result = "エレナ"
+			endif
+			sleep(0.05)
+		wend
+
+	fend
+
+	//=======================================================================
+	//	戦闘時のPT選択
+	//=======================================================================
+	procedure SelectParty( _nextPos )
+		//	サポート鯖選択画面まで待機
+		CMN.OutputPrint("サポート鯖選択画面まで待機")
+		while CHKIMG( "Battle/battle_img/preSelectSupportClass.bmp",-1,650,120,800,200 ) = FALSE
+			sleep(0.1)
+			if getkeystate(VK_ESC) then exitexit
+		wend
+
+		//	スクロールバーまでマウス移動
+		mmv(1240,250,0)
+
+		//	サポート鯖を選択するまで待機
+		CMN.OutputPrint("サポート鯖を選択するまで待機")
+		while CHKIMG( "Battle/battle_img/preSelectPartyNo.bmp",-1,100,650,200,800 ) = FALSE
+			//	リスト更新「はい」
+			if CHKIMG(IMG_REFRESH_YES_PATH,-1,800,500,900,700) = TRUE
+				btn( LEFT,CLICK,G_IMG_X+10,G_IMG_Y+5,0 )
+				mmv(1240,250,0)
+				sleep(1)
+			//	リスト更新 失敗時「閉じる」
+			elseif CHKIMG(IMG_REFRESH_CLOSE_PATH,-1,400,400,900,800) = TRUE
+				btn( LEFT,CLICK,G_IMG_X+10,G_IMG_Y+5,0 )
+				mmv(1240,250,0)
+				sleep(1)
+			endif
+
+			sleep(0.05)
+			if getkeystate(VK_ESC) then exitexit
+		wend
+
+		sleep(0.1)
+		//	ページ上部のPT選択ショートカット●●●ボタン押下
+		X1=525+(25*(_nextPos-1))
+		X2=535+(25*(_nextPos-1))
+		while CHKIMG( "Battle/battle_img/partyPos.bmp",1,X1,70,X2,85 ) = FALSE
+			CMN.OutputPrint("ページ上部のPT選択ショートカット●●●ボタン押下")
+			btn(LEFT,CLICK,527+(25*(_nextPos-1)),80,0)
+			sleep(0.8)
+			break
+		wend
+		sleep(0.2)
+		btn(LEFT,CLICK,1190,700,0)
+
+	fend
+
+	//=======================================================================
+	//	ボタンクリックをログに変換(多分使わないけど)
+	//=======================================================================
+	procedure ChangeBtnToFukidasi( _selclick, _type, _posX, _posY, _wait )
+//		balloon()
+		Fukidasi("次のクリック箇所", _posX, _posY-20, 0, 12, "Yu Gothic UI 中太")
+		sleep(5)
+	fend
+
+	//=======================================================================
+	//	繰り返しチェック
+	//=======================================================================
+	function CheckRepeatBattle()
+		result = msgbox( "同じ戦闘を繰り返しますか？", BTN_YES or BTN_NO)
+	fend
+
+	//=======================================================================
+	//	ログ出力
+	//=======================================================================
+	procedure OutputPrint( _text )
+		if OUTPUT_PRINT = TRUE
+			PRINT (_text)
+		endif
+	fend
+
+endclass

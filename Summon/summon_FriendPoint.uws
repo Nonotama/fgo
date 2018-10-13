@@ -1,0 +1,137 @@
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+public	IMG_FULL_PATH_SUMMON_FRIEND =	"Summon/img/summon_friend.bmp"
+public	IMG_FULL_PATH_SUMMON_10_BTN =	"Summon/img/summon_10button.bmp"
+public	IMG_FULL_PATH_SUMMON_OK_BTN =	"Summon/img/summon_okButton.bmp"
+public	IMG_FULL_PATH_SUMMON_BTN =		"Summon/img/summon_summonButton.bmp"
+public	IMG_FULL_PATH_SUMMON_NEXT_BTN =	"Summon/img/summon_newItemNextButton.bmp"
+
+//=======================================================================
+// Main処理
+//=======================================================================
+if summon_checkPreAct() = FALSE
+	exit
+endif
+
+while true
+
+	if summon_on10Button() = FALSE
+		exit
+	endif
+
+	if summon_onOkButton() = FALSE
+		exit
+	endif
+
+	if summon_onNextSummonButton() = FALSE
+		exit
+	endif
+
+wend
+
+
+//=======================================================================
+// 召喚実行前のチェック
+// 戻り値
+//		TRUE	：OK
+//		FALSE	：NG
+//=======================================================================
+function summon_checkPreAct()
+	result = TRUE
+
+	// MENUボタン押下
+	sleep(0.2)
+	btn(LEFT,CLICK,1200,700,0)
+	sleep(0.5)
+
+	// MENU - 召喚ボタン押下
+	sleep(0.2)
+	btn(LEFT,CLICK,540,650,0)
+	sleep(1)
+
+	// 召喚画面の<<押す
+	repeat
+		sleep(0.2)
+		btn(LEFT,CLICK,70,350,0)
+		sleep(0.5)
+	until CHKIMG(IMG_FULL_PATH_SUMMON_FRIEND,-1,0,300,1000,800) = TRUE
+
+	// 範囲(500,400)～(800,800)
+	if CHKIMG(IMG_FULL_PATH_SUMMON_FRIEND,-1,300,300,1000,800) = FALSE
+		msgbox("フレポ召喚じゃないから誤動作避けて終了します。")
+		result = FALSE
+	endif
+fend
+
+
+//=======================================================================
+// 10回召喚ボタン押下
+// 戻り値
+//		TRUE	：画像認識完了 + ボタン押下済み
+//		FALSE	：(基本使われない)
+//=======================================================================
+function summon_on10Button()
+	result = FALSE
+
+	sleep(0.5)
+
+	// 10連ボタン押下
+	while CHKIMG(IMG_FULL_PATH_SUMMON_10_BTN,-1,300,300,1000,800) = TRUE
+		btn(LEFT,CLICK,G_IMG_X,G_IMG_Y,0)
+		result = TRUE
+		sleep(0.2)
+	wend
+fend
+
+
+//=======================================================================
+// 決定押下
+// 戻り値
+//		TRUE	：画像認識完了 + ボタン押下済み
+//		FALSE	：(基本使われない)
+//=======================================================================
+function summon_onOkButton()
+	result = FALSE
+
+	sleep(0.5)
+
+	// 決定ボタン押下
+	while CHKIMG(IMG_FULL_PATH_SUMMON_OK_BTN,-1,300,300,1000,800) = TRUE
+		btn(LEFT,CLICK,G_IMG_X,G_IMG_Y,0)
+		result = TRUE
+	wend
+fend
+
+
+//=======================================================================
+// 次の召喚のための召喚ボタン押下
+// 戻り値
+//		TRUE	：画像認識完了 + ボタン押下済み
+//		FALSE	：(基本使われない)
+//=======================================================================
+function summon_onNextSummonButton()
+	result = FALSE
+	
+	sleep(0.2)
+
+	// 召喚ボタンが見つかるまで連打
+	while CHKIMG(IMG_FULL_PATH_SUMMON_BTN,-1,300,300,1000,800) = FALSE
+		btn(LEFT,CLICK,950,50,0)
+		sleep(0.2)
+	wend
+
+	// 次へ>>ボタン押下
+	if CHKIMG(IMG_FULL_PATH_SUMMON_NEXT_BTN,-1,300,300,1100,800) = TRUE
+		sleep(0.5)
+		btn(LEFT,CLICK,G_IMG_X,G_IMG_Y,0)
+	endif
+
+	// 召喚ボタン押下
+	while CHKIMG(IMG_FULL_PATH_SUMMON_BTN,-1,300,300,1000,800) = TRUE
+		sleep(0.2)
+		btn(LEFT,CLICK,G_IMG_X,G_IMG_Y,0)
+		result = TRUE
+		sleep(0.2)
+	wend
+fend

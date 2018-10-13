@@ -1,0 +1,123 @@
+call ClassFile/LOG.uws
+
+ACW(GETID("FGO","Qt5QWindowIcon"),594,183,1284,752,0)
+MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
+
+//=======================================================================
+// Main処理
+//=======================================================================
+while TRUE
+	//	合成画面(20個固定)
+	if CHKIMG( "System/common_img/synthesisDisp.bmp",1,1189,321,2000,325 )
+		selItem(3)
+		compSelectSynthesis()
+		LOG.outPutLog("[S]種火選択／売却")
+		break
+	endif
+
+	//	売却画面(28個固定)
+	if CHKIMG( "System/common_img/sellDisp.bmp",-1,1111,351,1122,355 )
+		selItem(4)
+		
+		select msgbox("まだ選択を続けますか？",btn_yes or btn_no)
+			case btn_yes
+				continue
+			case btn_no
+				compSelectSell()
+				LOG.outPutLog("[S]種火選択／売却")
+				break
+			case -1
+				exit
+		selend
+	endif
+
+	sleep(0.3)
+wend
+
+//=======================================================================
+// 任意個数選択関数
+//	戻り値	：なし
+//=======================================================================
+procedure selItem( _row )
+
+	startX = 135
+	startY = 250
+	endX = 940
+	endY = 250+(_row * 97.5)
+	dx = (endX - startX) / 10
+	dy = (endY - startY) / 10
+
+	btn(LEFT,DOWN,startX,startY)
+	sleep(1)
+	for n=1 to 10
+		startX = startX + dx
+		startY = startY + dy
+		MMV(startX,startY)
+		SLEEP(0.05)
+	next
+
+	btn(LEFT,UP,endX,endY)
+fend
+
+//=======================================================================
+//	種火自動合成
+//	戻り値	：なし
+//=======================================================================
+procedure compSelectSynthesis()
+	sleep(0.2)
+
+	BTN( LEFT, CLICK, 1150, 700, 0 )
+
+	//	種火選択後画面
+	while TRUE
+		sleep(0.2)
+		if CHKIMG( "System/common_img/synthesisButton.bmp",1,408,435,430,440 )
+			BTN( LEFT, CLICK, 1150, 700, 0 )
+			break
+		endif
+	wend
+
+	//	強化確認画面
+	while TRUE
+		sleep(0.2)
+		if CHKIMG( "System/common_img/decisionButton.bmp",1,821,601,850,610 )
+			BTN( LEFT, CLICK, G_IMG_X, G_IMG_Y, 0 )
+			break
+		endif
+	wend
+
+	sleep(1)
+
+	//	合成画面スキップ連打
+	while CHKIMG( "System/common_img/synthesisButton.bmp",1,408,435,430,440 ) = FALSE
+		BTN( LEFT, CLICK, 1150, 700, 0 )
+		sleep(0.2)
+	wend
+fend
+
+//=======================================================================
+// 売却有無の選択
+//	戻り値	：なし
+//=======================================================================
+procedure compSelectSell()
+	sleep(0.2)
+
+	BTN( LEFT, CLICK, 1150, 700, 0 )
+
+	//	売却確認画面
+	while TRUE
+		sleep(0.2)
+		if CHKIMG( "System/common_img/sellButton.bmp",-1,830,603,850,610 )
+			BTN( LEFT, CLICK, G_IMG_X, G_IMG_Y, 0 )
+			break
+		endif
+	wend
+
+	while TRUE
+		sleep(0.2)
+		if CHKIMG( "System/common_img/sellCloseButton.bmp",-1,612,604,650,620 )
+			BTN( LEFT, CLICK, G_IMG_X, G_IMG_Y, 0 )
+			break
+		endif
+	wend
+fend

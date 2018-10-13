@@ -1,0 +1,51 @@
+//	戦闘共通クラスの呼び出し
+call ClassFile/LOG.uws
+
+//	繰り返し出撃させるためループ
+while true
+	//=======================================================================
+	// バトルメニュー
+	//=======================================================================
+	select SLCTBOX(SLCT_BTN,0,_
+							"イベント専用",_		// タイトル
+							"(PT4) 木場　　　　",_	// SLCT_1
+							"(PT5) 目赤不動　　",_	// SLCT_2
+							"(PT6) 目黄不動　　",_	// SLCT_3
+							"(PT7) 裏・目黄不動",_	// SLCT_4
+							"(PT9) 裏・目黒不動",_	// SLCT_6
+							"　　　　　　　終了　　　　　　"_	// SLCT_7
+					)
+		case SLCT_1
+			LOG.outPutFukidasi( "行き先  ：PT4_木場<#CR>サポート：礼装(☆3凸)" )
+			call PT4_木場.uws (4)
+
+		case SLCT_2
+			LOG.outPutFukidasi( "行き先  ：PT5_目赤不動<#CR>サポート：礼装(☆4凸)" )
+			call PT5_目赤不動.uws (5)
+
+		case SLCT_3
+			LOG.outPutFukidasi( "行き先  ：PT6_目黄不動.uws<#CR>サポート：凸カレニトクリス" )
+			call PT6_目黄不動.uws (6)
+
+		case SLCT_4
+			LOG.outPutFukidasi( "行き先  ：PT7_裏・目黄不動<#CR>サポート：礼装(☆3凸)" )
+			call PT7_裏・目黄不動.uws (7)
+
+		case SLCT_5
+//			LOG.outPutFukidasi( "行き先  ：PT8__典位級<#CR>サポート：特に指定無し" )
+//			call PT8__典位級.uws (8)
+
+		case SLCT_6
+			LOG.outPutFukidasi( "行き先  ：PT9_裏・目黒不動<#CR>サポート：礼装(☆5凸)" )
+			call PT9_裏・目黒不動.uws (9)
+
+		case SLCT_7
+			exitexit
+
+		case -1
+			break
+	selend
+
+	//	吹き出し消去
+	LOG.DropOutFukidasi()
+wend

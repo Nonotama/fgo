@@ -1,0 +1,57 @@
+//	戦闘共通クラスの呼び出し
+call ClassFile/LOG.uws
+
+//	繰り返し出撃させるためループ
+while true
+	//=======================================================================
+	// バトルメニュー
+	//=======================================================================
+	select SLCTBOX(SLCT_BTN,0,_
+							"イベント専用",_		// タイトル
+							"(PT4) 対槍",_	// SLCT_1
+							"(PT5) 対剣　　",_	// SLCT_2
+							"-(PT6) 対弓　　",_	// SLCT_3
+							"-(PT7) 対術　　",_	// SLCT_4
+							"-(PT8) 対騎　　",_	// SLCT_5
+							"-(PT9) 対殺　　",_	// SLCT_6
+							"(PT10) 対狂　　",_	// SLCT_7
+							"　　　　　　　終了　　　　　　"_	// SLCT_7
+					)
+		case SLCT_1
+			LOG.outPutFukidasi( "行き先  ：PT4_対槍<#CR>サポート：---" )
+			call PT4_対槍.uws (4)
+
+		case SLCT_2
+			LOG.outPutFukidasi( "行き先  PT5_対剣<#CR>サポート：---" )
+			call PT5_対剣.uws (5)
+
+		case SLCT_3
+//			LOG.outPutFukidasi( "行き先  ：PT6_対弓<#CR>サポート：---" )
+//			call PT6_対弓.uws (6)
+
+		case SLCT_4
+			LOG.outPutFukidasi( "行き先  ：PT7_対術<#CR>サポート：---" )
+			call PT7_対術.uws (7)
+
+		case SLCT_5
+//			LOG.outPutFukidasi( "行き先  ：PT6_ニトクリスチーム(ホイール)<#CR>サポート：---" )
+//			call PT6_ニトクリスチーム.uws (8)
+
+		case SLCT_6
+//			LOG.outPutFukidasi( "行き先  ：PT9_対殺<#CR>サポート：---" )
+//			call PT9_対殺.uws (9)
+
+		case SLCT_7
+			LOG.outPutFukidasi( "行き先  ：PT10_対狂<#CR>サポート：---" )
+			call PT10_対狂.uws (10)
+
+		case SLCT_8
+			exitexit
+
+		case -1
+			break
+	selend
+
+	//	吹き出し消去
+	LOG.DropOutFukidasi()
+wend
