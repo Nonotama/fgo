@@ -9,7 +9,7 @@ class LOG
 	//	ログ出力
 	//=======================================================================
 	procedure OutPutLog( _msg )
-		if OUTPUT_PRINT = TRUE
+		if OUTPUT_LOG = TRUE
 			GETTIME()
 			date = "" + G_TIME_YY4 + G_TIME_MM2 + G_TIME_DD2
 			time = "" + G_TIME_HH2 + ":" + G_TIME_NN2 + ":" + G_TIME_SS2
