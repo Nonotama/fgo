@@ -32,7 +32,7 @@ while TRUE
 
 		//	Attackボタンがあれば攻撃処理へ
 		For index = 0 To 9
-//			CMN.OutputPrint(index)
+			CMN.OutputPrint(index)
 			if CHKIMG( "Battle/battle_img/criticalStar/actAttack_" + index + ".bmp") = TRUE
 				sleep(0.3)
 
