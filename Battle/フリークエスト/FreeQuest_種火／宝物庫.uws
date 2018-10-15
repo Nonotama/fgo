@@ -11,6 +11,7 @@ MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
 PARTY_NO =	PARAM_STR[0]
 CMN.SelectParty(PARTY_NO)
 
+index = 0
 Act_Phase = 1
 
 //=======================================================================
@@ -29,11 +30,14 @@ while TRUE
 		endif
 
 		//	Attackボタンがあれば攻撃処理へ
-		if CHKIMG( IMG_ATTACK_BTN,1,1041,719,1051,1045 ) = TRUE
-			sleep(0.3)
+		For index = 0 To 9
+			CMN.OutputPrint(index)
+			if CHKIMG( "Battle/battle_img/criticalStar/actAttack_" + index + ".bmp") = TRUE
+				sleep(0.3)
 
-			break
-		endif
+				break 2
+			endif
+		Next
 
 		sleep(0.05)
 	wend
@@ -69,7 +73,7 @@ while TRUE
 //			CMN.ServantSkill( 3, 0, "ギルガメッシュ1" )
 //			CMN.ServantSkill( 3, 0, "ギルガメッシュ3" )
 
-			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
 
 			CMN.SelectExCmdCard(1)
 			CMN.SelectNmlCmdMultiCard()
@@ -78,7 +82,7 @@ while TRUE
 
 		case 2
 			//	フェーズ2
-			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
 
 			CMN.SelectExCmdCard(2)
 			CMN.SelectNmlCmdMultiCard()
@@ -87,14 +91,14 @@ while TRUE
 		case 3
 			//	フェーズ3
 //			CMN.MasterSkill( 50, 0, "全体強化" )
-			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
 
 			CMN.SelectExCmdCard(3)
 			CMN.SelectNmlCmdMultiCard()
 			Act_Phase = -1
 
 		case -1
-			CMN.ServantSkill( 91, 0, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 91, index, PUSH_ATTACK_BUTTON )
 	selend
 
 wend
