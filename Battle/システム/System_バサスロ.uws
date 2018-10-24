@@ -11,6 +11,7 @@ MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
 PARTY_NO =	PARAM_STR[0]
 CMN.SelectParty(PARTY_NO)
 
+index = 0
 Act_Phase = 1
 
 //=======================================================================
@@ -29,11 +30,14 @@ while TRUE
 		endif
 
 		//	Attackボタンがあれば攻撃処理へ
-		if CHKIMG( IMG_ATTACK_BTN,1,1041,719,1051,1045 ) = TRUE
-			sleep(0.3)
+		For index = 0 To 9
+			CMN.OutputPrint(index)
+			if CHKIMG( "Battle/battle_img/criticalStar/actAttack_" + index + ".bmp") = TRUE
+				sleep(0.3)
 
-			break
-		endif
+				break 2
+			endif
+		Next
 
 		sleep(0.05)
 	wend
@@ -43,60 +47,44 @@ while TRUE
 	//=======================================================================
 	select Act_Phase
 		case 1
-			supportNo = 1
+			CMN.OutputPrint("フェーズ1")
 			//	フェーズ1
-			selectSupport = CMN.CheckSupport(supportNo)
-			if selectSupport = "マーリン"
-				CMN.ServantSkill( supportNo, 0, selectSupport + "1" )
-//				CMN.ServantSkill( supportNo, 3, selectSupport + "3" )
-			elseif selectSupport = "孔明"
-				CMN.ServantSkill( supportNo, 0, selectSupport + "2" )
-				CMN.ServantSkill( supportNo, 0, selectSupport + "3" )
-			elseif selectSupport = "エレナ"
-				CMN.ServantSkill( supportNo, 0, selectSupport + "1" )
-				CMN.ServantSkill( supportNo, 0, selectSupport + "3" )
-			elseif selectSupport = "オジマンディアス"
-				CMN.ServantSkill( supportNo, 0, selectSupport + "1" )
-				CMN.ServantSkill( supportNo, 0, selectSupport + "3" )
-			endif
-
-			CMN.OrderChangeCmd( 1, 4 )
-
-//			CMN.ServantSkill( 1, 0, "頼光2" )
-//			CMN.ServantSkill( 1, 0, "頼光3" )
-//			CMN.ServantSkill( 1, 0, "スパルタクス2" )
-//			CMN.ServantSkill( 1, 0, "スパルタクス3" )
-//			CMN.ServantSkill( 3, 0, "ギルガメッシュ1" )
-//			CMN.ServantSkill( 3, 0, "ギルガメッシュ3" )
-
-			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 2, 1, "スカディ1" )
+			CMN.ServantSkill( 3, 1, "スカディ1" )
+			CMN.MasterSkill( 50, 1, "コードH" )
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
 
 			CMN.SelectExCmdCard(1)
-			CMN.SelectNmlCmdMultiCard()
 
 			Act_Phase = 2
 
 		case 2
+			CMN.OutputPrint("フェーズ2")
 			//	フェーズ2
-			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 1, 0, "バサスロ3" )
+			CMN.ServantSkill( 2, 0, "スカディ2" )
+			CMN.ServantSkill( 2, 1, "スカディ3" )
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
 
-			CMN.SelectExCmdCard(2)
-			CMN.SelectNmlCmdMultiCard()
+			CMN.SelectExCmdCard(1)
 			Act_Phase = 3
 
 		case 3
+			CMN.OutputPrint("フェーズ3")
 			//	フェーズ3
-//			CMN.MasterSkill( 50, 0, "全体強化" )
-			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 3, 0, "スカディ2" )
+			CMN.ServantSkill( 3, 1, "スカディ3" )
+			CMN.MasterSkill( 50, 1, "コードF" )
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
 
-			CMN.SelectExCmdCard(3)
-			CMN.SelectNmlCmdMultiCard()
+			CMN.SelectExCmdCard(1)
 			Act_Phase = -1
 
-		case -1
-			CMN.ServantSkill( 91, 0, PUSH_ATTACK_BUTTON )
+		default
+			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
 	selend
 
+	CMN.SelectNmlCmdMultiCard()
 wend
 
 //	TOP画面まで戻る
