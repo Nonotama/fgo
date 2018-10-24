@@ -50,6 +50,7 @@ while TRUE
 			CMN.OutputPrint("フェーズ1")
 			//	フェーズ1
 			CMN.ServantSkill( 2, 1, "スカディ1" )
+			CMN.ServantSkill( 2, 0, "スカディ2" )
 			CMN.ServantSkill( 3, 1, "スカディ1" )
 			CMN.MasterSkill( 50, 1, "コードH" )
 			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
@@ -62,7 +63,6 @@ while TRUE
 			CMN.OutputPrint("フェーズ2")
 			//	フェーズ2
 			CMN.ServantSkill( 1, 0, "バサスロ3" )
-			CMN.ServantSkill( 2, 0, "スカディ2" )
 			CMN.ServantSkill( 2, 1, "スカディ3" )
 			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
 
