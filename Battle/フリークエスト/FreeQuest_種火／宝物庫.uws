@@ -66,40 +66,30 @@ while TRUE
 
 			CMN.OrderChangeCmd( 1, 4 )
 
-//			CMN.ServantSkill( 1, 0, "頼光2" )
-//			CMN.ServantSkill( 1, 0, "頼光3" )
-//			CMN.ServantSkill( 1, 0, "スパルタクス2" )
-//			CMN.ServantSkill( 1, 0, "スパルタクス3" )
-//			CMN.ServantSkill( 3, 0, "ギルガメッシュ1" )
-//			CMN.ServantSkill( 3, 0, "ギルガメッシュ3" )
-
 			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
-
 			CMN.SelectExCmdCard(1)
-			CMN.SelectNmlCmdMultiCard()
 
 			Act_Phase = 2
 
 		case 2
 			//	フェーズ2
 			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
-
 			CMN.SelectExCmdCard(2)
-			CMN.SelectNmlCmdMultiCard()
 			Act_Phase = 3
 
 		case 3
 			//	フェーズ3
 //			CMN.MasterSkill( 50, 0, "全体強化" )
 			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
-
 			CMN.SelectExCmdCard(3)
-			CMN.SelectNmlCmdMultiCard()
 			Act_Phase = -1
 
 		case -1
 			CMN.ServantSkill( 91, index, PUSH_ATTACK_BUTTON )
+
 	selend
+	
+	CMN.SelectNmlCmdMultiCard()
 
 wend
 
