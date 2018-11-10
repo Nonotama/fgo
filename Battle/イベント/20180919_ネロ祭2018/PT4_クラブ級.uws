@@ -30,14 +30,11 @@ while TRUE
 		endif
 
 		//	Attackボタンがあれば攻撃処理へ
-		For index = 0 To 9
-			print (index)
-			if CHKIMG( "Battle/battle_img/criticalStar/actAttack_" + index + ".bmp") = TRUE
-				sleep(0.3)
+		if CHKIMG( IMG_ATTACK_BTN,1,1000,500,1280,850 ) = TRUE
+			sleep(0.3)
 
-				break 2
-			endif
-		Next
+			break
+		endif
 
 		sleep(0.05)
 	wend

@@ -10,7 +10,7 @@ call ClassFile/LOG.uws
 //===========================================================================
 //	画像認識
 public	IMG_MASTER_SKILL_BTN	= "Battle/battle_img/ex0.bmp"
-public	IMG_ATTACK_BTN			= "Battle/battle_img/criticalStar/actAttack_"
+public	IMG_ATTACK_BTN			= "Battle/battle_img/Attackボタン押下判定.bmp"
 public	IMG_BOOTY1_PATH			= "Battle/battle_img/絆取得.bmp"
 public	IMG_BOOTY2_PATH			= "Battle/battle_img/獲得した戦利品_フリクエ.bmp"
 public	IMG_BOOTY2_PATH2		= "Battle/battle_img/獲得した戦利品_イベント.bmp"
@@ -19,17 +19,12 @@ public	IMG_REFRESH_YES_PATH	= "System/common_img/refreshListYes.bmp"
 public	IMG_REFRESH_CLOSE_PATH	= "System/common_img/refreshListClose.bmp"
 
 //	戦闘
-public	SELECTED_NML_CARD		= 0
 public	WAIT_SEL_EX_CMD_CARD	= 0.6
 public	PUSH_ATTACK_BUTTON		= "attack"
-public	MAX_SEL_CARD			= 3
-public	CARD_TYPE_BUSTER		= "B"
-public	CARD_TYPE_ARTS			= "A"
-public	CARD_TYPE_QUICK			= "Q"
 
 //	その他
 public	OUTPUT_LOG		= FALSE
-public	OUTPUT_PRINT	= FALSE
+public	OUTPUT_PRINT	= TRUE
 public	WAIT_SHARE_STAR = FALSE
 public	dim	ST_WAIT_COLLECT_STAR[] =	"バサスロ1","源頼光1","アタランテ・オルタ1","ジャンヌ・オルタ1",_
 										"ギルガメッシュ3","スカサハ1","サンテラ1","巴御前2",_

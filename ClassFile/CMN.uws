@@ -36,56 +36,47 @@ CLASS CMN
 			// マスター礼装
 			case 50
 				//	マスタースキルボタン認識まで待機
+				OutputPrint("CMN::CheckImage マスタースキルボタン認識まで待機")
 				while CHKIMG( IMG_MASTER_SKILL_BTN,-1,1170,320,1230,375 ) = FALSE
 					sleep(0.1)
 				wend
 				sleep(0.2)
 				btn(LEFT,CLICK,G_IMG_X,G_IMG_Y,0)
+				OutputPrint("CMN::CheckImage マスタースキルボタン押下を確認")
 
 				//	マスタースキルのサブウィンドウ内のスキルを認識まで待機
+				OutputPrint("CMN::CheckImage マスタースキルサブウィンドウ展開まで待機")
 				While CHKIMG( IMG_ACT_MASTER_BTN,-1,880,310,1110,370 ) = FALSE
 					sleep(0.1)
 				Wend
 				sleep(0.25)
 				btn(LEFT,CLICK,G_IMG_X+15,G_IMG_Y+15,0)
+				OutputPrint("CMN::CheckImage マスタースキル("+_img+")押下を確認")
 
 			// アタックボタン
 			case 90
-				//	アタックボタン認識まで待機
-				while CHKIMG( IMG_ATTACK_BTN+_selServant+".bmp",1,1000,600,1100,750 ) = FALSE
+				// スキル等実行後、アタックボタン認識まで待機
+				OutputPrint("CMN::CheckImage Attackボタン認識まで待機")
+				while CHKIMG( IMG_ATTACK_BTN,1,1000,500,1280,850 ) = FALSE
 					sleep(0.1)
 				wend
-				OutputPrint(IMG_ATTACK_BTN+_selServant+".bmp")
+				OutputPrint("CMN::CheckImage Attackボタンを確認")
 
-//				sleep(0.2)
-//				btn(LEFT,CLICK,1130,600,0)
-//				sleep(0.5)
+				sleep(0.75)
 
-				if CHKIMG( IMG_ATTACK_BTN+_selServant+".bmp",1,1000,600,1100,750 ) = TRUE
+				if CHKIMG( IMG_ATTACK_BTN,1,1000,500,1280,850 ) = TRUE
 					btn(LEFT,CLICK,1130,600,0)
-					OutputPrint("攻撃ボタンクリック")
+					OutputPrint("CMN::CheckImage Attackボタンクリック")
 					sleep(0.4)
 				endif
 
-				//	コマンドカード出現までの待ち
-				OutputPrint("コマンドカード出現までの待ち")
+				//	コマンドカード出現までの待機
+				OutputPrint("CMN::CheckImage コマンドカード出現まで待機")
 				sleep(WAIT_SEL_EX_CMD_CARD)
 
 				WAIT_SHARE_STAR = FALSE
 
 				_selServant = 0
-
-			//	バスター優先選択
-			case 91
-				SelectNmlTypeCard(CARD_TYPE_BUSTER)
-
-			//	アーツ優先選択
-			case 92
-				SelectNmlTypeCard(CARD_TYPE_ARTS)
-
-			//	クイック優先選択
-			case 93
-				SelectNmlTypeCard(CARD_TYPE_QUICK)
 
 			// 戦闘終了までクリック連打
 			case 99
@@ -123,6 +114,7 @@ CLASS CMN
 				CHK_SKILL_E = 290 + 320*(_chkPos-1)
 
 				//	スキル画像認識まで待機
+				CMN.OutputPrint("CMN::CheckImage スキル("+_chkPos+"番目の"+_img+")を選択するまで待機")
 				while CHKIMG( IMG_ACT_SKILL_BTN,-1,CHK_SKILL_S,580,CHK_SKILL_E,640 ) = FALSE
 					sleep(0.1)
 				wend
@@ -150,6 +142,7 @@ CLASS CMN
 				next
 
 				btn(LEFT,CLICK,G_IMG_X+15,G_IMG_Y+15,0)
+				CMN.OutputPrint("CMN::CheckImage スキル("+_chkPos+"番目の"+_img+")を選択を確認")
 
 		selend
 
@@ -196,6 +189,7 @@ CLASS CMN
 	//=======================================================================
 	procedure OrderChangeCmd( _pos1, _pos2 )
 		CheckImage( 50, 0, "オーダーチェンジ" )
+		OutputPrint( "CMN::OrderChangeCmd("+_pos1+"⇔"+_pos2+")" )
 
 		WAIT_SHARE_STAR = TRUE
 
@@ -221,33 +215,8 @@ CLASS CMN
 	//	Y	250
 	//=======================================================================
 	procedure SelectExCmdCard( _pos )
-		OutputPrint( "SelectExCmdCard" )
+		OutputPrint( "CMN::SelectExCmdCard("+_pos+")" )
 		btn(LEFT,CLICK,420+240*(_pos-1),250,0)
-		sleep(0.1)
-	fend
-
-	//=======================================================================
-	//	通常コマンドカード選択
-	//	カード位置
-	//		 0    1    2    3    4
-	//		 □	 □	 □	 □	 □
-	//	X	135	390	645	900	1155
-	//	Y	500
-	//=======================================================================
-	procedure SelectNmlCmdSingleCard()
-		pos = random(5)
-
-		//	前回選択したカードと比較し、異なる数値が出るまで繰り返す(0～4)
-		while true
-			if SELECTED_NML_CARD = pos
-				pos = random(5)
-			else
-				SELECTED_NML_CARD = pos
-				break
-			endif
-		wend
-
-		btn(LEFT,CLICK,135+(255*pos),500,0)
 		sleep(0.1)
 	fend
 
@@ -276,75 +245,6 @@ CLASS CMN
 			btn(LEFT,CLICK,135+(255*st_card[i]),500,0)
 			sleep(0.1)
 		next
-	fend
-
-	//=======================================================================
-	//	通常コマンドカード選択(Baster,Arts,Quickカード偏重)
-	//	※現在Basterカード優先処理のみ実装
-	//=======================================================================
-	procedure SelectNmlTypeCard( _type )
-		dim	st_Main[3]
-		dim	st_Etc[3]
-
-		CARD_TYPE_PATH = ""
-
-		CountMainType = 0
-		CountSubType = 0
-
-		if _type = CARD_TYPE_BUSTER
-			CARD_TYPE_PATH = "Battle/battle_img/card_type/B"
-		elseif _type = CARD_TYPE_ARTS
-			CARD_TYPE_PATH = "Battle/battle_img/card_type/A"
-		elseif _type = CARD_TYPE_QUICK
-			CARD_TYPE_PATH = "Battle/battle_img/card_type/Q"
-		else
-			//	指定以外の引数が渡されたらバスター固定
-			CARD_TYPE_PATH = "Battle/battle_img/card_type/B"
-		endif
-
-		sleep(0.1)
-
-		//	タイプ別カード検索
-		for i=1 to 5
-			//	3枚揃ったら抜ける
-			if CountMainType > 2
-				break
-			endif
-
-			//	カード検索
-			if CHKIMG( CARD_TYPE_PATH + i + ".bmp",1,950,470,1250,620 )
-				//	_typeが見つかったら、st_Main[0-2]にカード位置を格納
-				st_Main[CountMainType] = i
-				CountMainType = CountMainType + 1
-			else
-				//	AAQQB等の場合もあるので、AQ4枚目以降はカウントしない
-				if CountSubType < MAX_SEL_CARD
-					//	_type以外のカード位置をst_Etc[0-2]にカード位置を格納
-					st_Etc[CountSubType] = i
-					CountSubType = CountSubType + 1
-				endif
-			endif
-		next
-
-		//	攻撃ボタン押下
-		CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
-
-		//	_typeが1枚以上ある時
-		if CountMainType > 0
-			for i=0 to CountMainType-1
-				sleep(0.15)
-				btn(LEFT,CLICK,135+(255*(st_Main[i]-1)),500,0)
-			next
-		endif
-
-		//	2枚以下の時
-		if CountMainType < 3
-			//	選択最大枚数(3)から_typeカードの枚数を引いた数だけ実行
-			for i=0 to 2-CountMainType
-				sleep(0.15)
-				btn(LEFT,CLICK,135+(255*(st_Etc[i]-1)),500,0)
-			next
-		endif
 	fend
 
 	//=======================================================================
@@ -382,7 +282,6 @@ CLASS CMN
 			endif
 			sleep(0.05)
 		wend
-
 	fend
 
 	//=======================================================================
@@ -390,17 +289,18 @@ CLASS CMN
 	//=======================================================================
 	procedure SelectParty( _nextPos )
 		//	サポート鯖選択画面まで待機
-		CMN.OutputPrint("サポート鯖選択画面まで待機")
+		CMN.OutputPrint("CMN::SelectParty サポート鯖選択画面まで待機")
 		while CHKIMG( "Battle/battle_img/preSelectSupportClass.bmp",-1,650,120,800,200 ) = FALSE
 			sleep(0.1)
 			if getkeystate(VK_ESC) then exitexit
 		wend
+		CMN.OutputPrint("CMN::SelectParty サポート鯖選択画面を確認")
 
 		//	スクロールバーまでマウス移動
 		mmv(1240,250,0)
 
 		//	サポート鯖を選択するまで待機
-		CMN.OutputPrint("サポート鯖を選択するまで待機")
+		CMN.OutputPrint("CMN::SelectParty サポート鯖を選択するまで待機")
 		while CHKIMG( "Battle/battle_img/preSelectPartyNo.bmp",-1,100,650,200,800 ) = FALSE
 			//	リスト更新「はい」
 			if CHKIMG(IMG_REFRESH_YES_PATH,-1,800,500,900,700) = TRUE
@@ -417,20 +317,21 @@ CLASS CMN
 			sleep(0.05)
 			if getkeystate(VK_ESC) then exitexit
 		wend
+		CMN.OutputPrint("CMN::SelectParty サポート鯖を選択を確認")
 
 		sleep(0.1)
 		//	ページ上部のPT選択ショートカット●●●ボタン押下
 		X1=525+(25*(_nextPos-1))
 		X2=535+(25*(_nextPos-1))
+			CMN.OutputPrint("CMN::SelectParty PT選択ショートカット●("+_nextPos+")ボタン押下まで待機")
 		while CHKIMG( "Battle/battle_img/partyPos.bmp",1,X1,70,X2,85 ) = FALSE
-			CMN.OutputPrint("ページ上部のPT選択ショートカット●●●ボタン押下")
 			btn(LEFT,CLICK,527+(25*(_nextPos-1)),80,0)
 			sleep(0.8)
 			break
 		wend
 		sleep(0.2)
 		btn(LEFT,CLICK,1190,700,0)
-
+		CMN.OutputPrint("CMN::SelectParty PT選択ショートカット●("+_nextPos+")ボタン押下を確認")
 	fend
 
 	//=======================================================================

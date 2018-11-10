@@ -11,13 +11,12 @@ MOUSEORG(GETID("FGO","Qt5QWindowIcon"))
 PARTY_NO =	PARAM_STR[0]
 CMN.SelectParty(PARTY_NO)
 
-index = 0
 Act_Phase = 1
 
 //=======================================================================
 //	ログの出力
 //=======================================================================
-LOG.OutPutLog("[B]FreeQuest_種火／宝物庫")
+LOG.OutPutLog("[E]System_バサスロ")
 
 while TRUE
 	//=======================================================================
@@ -30,14 +29,11 @@ while TRUE
 		endif
 
 		//	Attackボタンがあれば攻撃処理へ
-		For index = 0 To 9
-			CMN.OutputPrint(index)
-			if CHKIMG( "Battle/battle_img/criticalStar/actAttack_" + index + ".bmp") = TRUE
-				sleep(0.3)
+		if CHKIMG( IMG_ATTACK_BTN,1,1000,500,1280,850 ) = TRUE
+			sleep(0.3)
 
-				break 2
-			endif
-		Next
+			break
+		endif
 
 		sleep(0.05)
 	wend
@@ -47,41 +43,40 @@ while TRUE
 	//=======================================================================
 	select Act_Phase
 		case 1
-			CMN.OutputPrint("フェーズ1")
+			CMN.OutputPrint("====フェーズ"+Act_Phase+"====")
 			//	フェーズ1
 			CMN.ServantSkill( 2, 1, "スカディ1" )
-			CMN.ServantSkill( 2, 0, "スカディ2" )
 			CMN.ServantSkill( 3, 1, "スカディ1" )
 			CMN.MasterSkill( 50, 1, "コードH" )
-			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
 
 			CMN.SelectExCmdCard(1)
-
 			Act_Phase = 2
 
 		case 2
-			CMN.OutputPrint("フェーズ2")
+			CMN.OutputPrint("====フェーズ"+Act_Phase+"====")
 			//	フェーズ2
 			CMN.ServantSkill( 1, 0, "バサスロ3" )
 			CMN.ServantSkill( 2, 1, "スカディ3" )
-			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
 
 			CMN.SelectExCmdCard(1)
 			Act_Phase = 3
 
 		case 3
-			CMN.OutputPrint("フェーズ3")
+			CMN.OutputPrint("====フェーズ"+Act_Phase+"====")
 			//	フェーズ3
+			CMN.ServantSkill( 2, 0, "スカディ2" )
 			CMN.ServantSkill( 3, 0, "スカディ2" )
 			CMN.ServantSkill( 3, 1, "スカディ3" )
 			CMN.MasterSkill( 50, 1, "コードF" )
-			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
 
 			CMN.SelectExCmdCard(1)
 			Act_Phase = -1
 
 		default
-			CMN.ServantSkill( 90, index, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
 	selend
 
 	CMN.SelectNmlCmdMultiCard()
@@ -89,3 +84,4 @@ wend
 
 //	TOP画面まで戻る
 CMN.ServantSkill( 99, 0, "nextButton" )
+CMN.OutputPrint("戦闘終了")
