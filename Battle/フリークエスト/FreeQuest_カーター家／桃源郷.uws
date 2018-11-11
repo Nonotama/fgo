@@ -25,7 +25,7 @@ while TRUE
 		endif
 
 		//	Attackボタンがあれば攻撃処理へ
-		if CHKIMG( IMG_ATTACK_BTN,1,1041,719,1051,1045 ) = TRUE
+		if CHKIMG( IMG_ATTACK_BTN,1,1000,500,1280,850 ) = TRUE
 			sleep(0.3)
 
 			break
@@ -40,42 +40,35 @@ while TRUE
 	select Act_Phase
 		case 1
 			//	フェーズ1
-            CMN.ServantSkill( 1, 0, "ペンテシレイア1" )
-            CMN.ServantSkill( 1, 0, "ペンテシレイア3" )
-            CMN.OrderChangeCmd( 1, 4 )
-            CMN.ServantSkill( 1, 0, "マーリン1" )
             CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
 
-            CMN.SelectExCmdCard(3)
-            CMN.SelectNmlCmdMultiCard()
-
+            CMN.SelectExCmdCard(1)
 			Act_Phase = 2
 
 		case 2
 			//	フェーズ2
-            CMN.ServantSkill( 3, 0, "ニトクリス2" )
+            CMN.ServantSkill( 1, 0, "ニトクリス2" )
             CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
 
-            CMN.SelectExCmdCard(3)
-            CMN.SelectNmlCmdMultiCard()
-
+            CMN.SelectExCmdCard(1)
 			Act_Phase = 3
 
 		case 3
 			//	フェーズ3
-            CMN.ServantSkill( 1, 2, "マーリン3" )
-            CMN.ServantSkill( 2, 0, "メカエリチャン3" )
+            CMN.ServantSkill( 3, 2, "スカディ1" )
+            CMN.ServantSkill( 3, 0, "スカディ2" )
+            CMN.ServantSkill( 3, 2, "スカディ3" )
+			CMN.MasterSkill( 50, 2, "幻想強化" )
             CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
 
             CMN.SelectExCmdCard(2)
-            CMN.SelectNmlCmdMultiCard()
-
 			Act_Phase = -1
 
 		case -1
-			CMN.ServantSkill( 91, 0, PUSH_ATTACK_BUTTON )
+			CMN.ServantSkill( 90, 0, PUSH_ATTACK_BUTTON )
 	selend
 
+	CMN.SelectNmlCmdMultiCard()
 wend
 
 //	TOP画面まで戻る

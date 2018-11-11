@@ -24,7 +24,7 @@ public	PUSH_ATTACK_BUTTON		= "attack"
 
 //	その他
 public	OUTPUT_LOG		= FALSE
-public	OUTPUT_PRINT	= TRUE
+public	OUTPUT_PRINT	= FALSE
 public	WAIT_SHARE_STAR = FALSE
 public	dim	ST_WAIT_COLLECT_STAR[] =	"バサスロ1","源頼光1","アタランテ・オルタ1","ジャンヌ・オルタ1",_
 										"ギルガメッシュ3","スカサハ1","サンテラ1","巴御前2",_

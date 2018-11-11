@@ -60,15 +60,12 @@ CLASS CMN
 				while CHKIMG( IMG_ATTACK_BTN,1,1000,500,1280,850 ) = FALSE
 					sleep(0.1)
 				wend
-				OutputPrint("CMN::CheckImage Attackボタンを確認")
+				OutputPrint("CMN::CheckImage Attackボタン認識を確認")
 
-				sleep(0.75)
-
-				if CHKIMG( IMG_ATTACK_BTN,1,1000,500,1280,850 ) = TRUE
-					btn(LEFT,CLICK,1130,600,0)
-					OutputPrint("CMN::CheckImage Attackボタンクリック")
-					sleep(0.4)
-				endif
+				//	Attackボタン押下
+				btn(LEFT,CLICK,1130,600,0)
+				OutputPrint("CMN::CheckImage Attackボタンクリック")
+				sleep(0.4)
 
 				//	コマンドカード出現までの待機
 				OutputPrint("CMN::CheckImage コマンドカード出現まで待機")
@@ -104,6 +101,7 @@ CLASS CMN
 				sleep(0.5)
 
 				//	フレ以外のサポの場合、申請しないを選択
+				OutputPrint("CMN::CheckImage フレンド申請画面まで待機")
 				if CHKIMG( IMG_NO_REQ_PATH,-1,200,600,450,900 ) = TRUE
 					btn(LEFT,CLICK,G_IMG_X,G_IMG_Y+10,0)
 				endif
